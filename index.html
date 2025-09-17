@@ -1,0 +1,265 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prakoso - Lidah Buaya</title>
+  <style>
+    /* Font & Reset */
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
+    body {
+      min-height:100vh;
+      background:linear-gradient(135deg,#e8f5e9,#ffffff);
+      overflow-x:hidden;
+      color:#1b4332;
+    }/* Efek Partikel Daun */
+.leaf {
+  position:fixed;
+  top:-50px;
+  width:25px;
+  height:25px;
+  background:url('https://cdn-icons-png.flaticon.com/512/766/766190.png') no-repeat center/contain;
+  opacity:0.7;
+  animation:fall linear infinite;
+}
+@keyframes fall {
+  to {transform:translateY(110vh) rotate(360deg); opacity:0;}
+}
+
+header {
+  text-align:center;
+  padding:60px 20px 40px;
+}
+header h1 {
+  font-size:2.5em;
+  background:linear-gradient(90deg,#2e7d32,#66bb6a);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  font-weight:700;
+}
+
+.container {
+  max-width:1000px;
+  margin:0 auto;
+  padding:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+}
+
+.card {
+  background:rgba(255,255,255,0.25);
+  backdrop-filter:blur(12px);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.1);
+  transition:transform 0.3s ease,box-shadow 0.3s ease;
+  cursor:pointer;
+}
+.card:hover {
+  transform:translateY(-6px);
+  box-shadow:0 12px 40px rgba(0,0,0,0.15);
+}
+.card img {
+  width:100%;
+  border-radius:15px;
+  margin-bottom:15px;
+}
+.card h2 {margin-bottom:10px; font-size:1.4em;}
+.card p {font-size:0.95em; line-height:1.6;}
+
+/* Modal */
+.modal-bg {
+  position:fixed; top:0; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(6px);
+  display:none; align-items:center; justify-content:center;
+  z-index:100;
+}
+.modal {
+  background:rgba(255,255,255,0.3);
+  backdrop-filter:blur(16px);
+  border-radius:20px;
+  max-width:600px;
+  padding:30px;
+  animation:pop 0.4s ease;
+  box-shadow:0 8px 32px rgba(0,0,0,0.2);
+}
+@keyframes pop {
+  from {transform:scale(0.8); opacity:0;}
+  to {transform:scale(1); opacity:1;}
+}
+.modal h2 {margin-bottom:15px;}
+.modal p {line-height:1.7;}
+.close-btn {
+  margin-top:20px;
+  padding:10px 20px;
+  border:none;
+  border-radius:12px;
+  background:#2e7d32;
+  color:#fff;
+  cursor:pointer;
+  transition:0.3s;
+}
+.close-btn:hover {background:#1b5e20;}
+
+/* Chat Button */
+#chat-btn {
+  position:fixed; bottom:25px; right:25px;
+  width:60px; height:60px;
+  background:#2e7d32;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  color:white; font-size:26px;
+  cursor:pointer;
+  box-shadow:0 6px 20px rgba(0,0,0,0.25);
+  transition:all 0.4s ease;
+  z-index:200;
+}
+#chat-box {
+  position:fixed; bottom:100px; right:25px;
+  width:0; height:0; opacity:0;
+  overflow:hidden;
+  border-radius:20px;
+  background:rgba(255,255,255,0.2);
+  backdrop-filter:blur(15px);
+  box-shadow:0 6px 20px rgba(0,0,0,0.25);
+  transition:all 0.4s ease;
+  display:flex; flex-direction:column;
+  z-index:200;
+}
+#chat-box.open {
+  width:320px; height:400px; opacity:1;
+  padding:15px;
+}
+#chat-box h3 {margin-bottom:10px;}
+#chat-box .messages {flex:1; overflow-y:auto; font-size:0.9em;}
+#chat-box input {
+  border:none; border-radius:12px;
+  padding:10px; margin-top:10px;
+  outline:none;
+}
+
+footer {
+  margin-top:60px;
+  text-align:center;
+  padding:20px;
+  background:rgba(255,255,255,0.2);
+  backdrop-filter:blur(12px);
+  font-size:0.9em;
+}
+
+  </style>
+</head>
+<body><header>
+  <h1>L i d a h - B u a y a</h1>
+  <h1>ᴾʳᵃᵏᵒˢᵒ ᴬᵈⁱ ᵂⁱᵇᵒʷᵒ</h1>
+</header><div class="container">
+<!-- Music Player -->
+<div id="music-player" style="text-align:center; margin-top:20px;">
+  <audio id="bg-music" src="https://files.catbox.moe/82ecjx.mp4"></audio>
+  <button id="music-btn" style="padding:10px 20px; border:none; border-radius:12px; background:#2e7d32; color:white; cursor:pointer;">
+    ▶ Play Musik
+  </button>
+  <div class="card" onclick="openModal('manfaat')">
+    <img src="https://img1.pixhost.to/images/8756/641216136_ikyhost.jpg" alt="Lidah Buaya">
+    <h2>Lidah Buaya (Aloe Vera)</h2>
+    <p>1. Apa itu lidah buaya?</p>
+    <p>Lidah buaya adalah tanaman sukulen (menyimpan air dalam daunnya) yang termasuk keluarga Asphodelaceae. Tanaman ini dikenal dengan daun tebal, berdaging, dan bergerigi di tepinya. Di dalam daunnya terdapat gel bening yang sering digunakan untuk kesehatan, kecantikan, dan obat tradisional.</p>
+    <p>2. Mengapa Nama Latinnya seperti itu?</p>
+    <p>Nama ilmiah lidah buaya adalah Aloe vera. Kata “Aloe” berasal dari bahasa Arab “Alloeh” yang berarti zat pahit atau pahit. Hal ini merujuk pada getah kuning pahit (aloin) yang ada di bawah kulit daunnya. Kata “Vera” berasal dari bahasa Latin yang berarti “benar/asli”. Jadi, Aloe vera bisa diartikan sebagai “lidah buaya yang asli”, karena memang dianggap sebagai spesies lidah buaya yang paling murni dan banyak digunakan.</p>
+    <p>3. Asal Usul Lidah Buaya</p>
+    <p>Lidah buaya bukan tanaman asli Indonesia. Tanaman ini diduga berasal dari Afrika Utara, khususnya daerah sekitar Mesir, Sudan, hingga Semenanjung Arab. Sejak ribuan tahun lalu sudah dipakai sebagai tanaman obat di Mesir Kuno, India, hingga Tiongkok. Bahkan catatan sejarah menyebut Cleopatra menggunakan gel lidah buaya untuk perawatan kulit. Dari Afrika dan Timur Tengah, lidah buaya menyebar ke berbagai daerah tropis melalui jalur perdagangan dan kolonialisme.</p>
+    <p>4. Masuk ke Indonesia</p>
+    <p>Lidah buaya dibawa ke Nusantara melalui pedagang dan penjelajah (Arab, India, hingga Eropa) yang membawa tanaman obat saat berdagang rempah-rempah. Karena iklim Indonesia tropis dan cocok untuk tanaman sukulen, lidah buaya mudah tumbuh dan akhirnya dibudidayakan di berbagai daerah. Kini salah satu sentra lidah buaya terbesar di Indonesia ada di Pontianak, Kalimantan Barat.</p>
+    <p>     ---- Klik untuk melihat manfaat Lidah Buaya.</p>
+  </div>
+  <div class="card" onclick="openModal('klasifikasi')">
+    <img src="https://img1.pixhost.to/images/8756/641216665_ikyhost.jpg" alt="Lidah Buaya Detail">
+    <h2>Klasifikasi Ilmiah</h2>
+    <p>Mau tahu kingdom hingga spesies dari Lidah Buaya? Yuk klik button ini sekarang! Jika info dirasa kurang melengkapi, kalian bisa loh bertanya mengenai manfaat/klasifikasi dari Lidah Buaya ini dengan cara: "Apa Manfaat Lidah Buaya?" dan juga "Klasifikasi Lidah Buaya apa saja?" di tombol bagian kanan paling bawah ini!!</p>
+  </div>
+</div><!-- Modal --><div class="modal-bg" id="modal-bg">
+  <div class="modal" id="modal-content">
+    <h2>Judul</h2>
+    <p>Konten...</p>
+    <button class="close-btn" onclick="closeModal()">Tutup</button>
+  </div>
+</div><!-- Chat --><div id="chat-btn">💬</div>
+<div id="chat-box">
+  <h3>AI Chat Tanaman</h3>
+  <div class="messages" id="messages"></div>
+  <input type="text" id="user-input" placeholder="Tanyakan tentang Lidah Buaya..." onkeypress="handleKey(event)">
+</div><footer>
+  <p>Di Buat oleh: Prakoso Adi Wibowo dengan penuh semangat yang mem-🔥</p>
+</footer><script>
+  // Modal
+  const modalBg=document.getElementById('modal-bg');
+  const modalContent=document.getElementById('modal-content');
+  function openModal(type){
+    if(type==='manfaat'){
+      modalContent.innerHTML=`<h2>Manfaat Lidah Buaya</h2>
+      <p>Lidah buaya memiliki banyak manfaat, antara lain: merawat kesehatan kulit, mengatasi luka bakar, membantu pencernaan, serta digunakan sebagai bahan minuman dan kosmetik alami.</p>
+      <button class='close-btn' onclick='closeModal()'>Tutup</button>`;
+    } else if(type==='klasifikasi'){
+      modalContent.innerHTML=`<h2>Klasifikasi Ilmiah</h2>
+      <p><b>Kingdom:</b> Plantae<br>
+      <b>Divisi:</b> Angiospermae<br>
+      <b>Kelas:</b> Monokotil<br>
+      <b>Ordo:</b> Asparagales<br>
+      <b>Famili:</b> Asphodelaceae<br>
+      <b>Genus:</b> Aloe<br>
+      <b>Spesies:</b> Aloe vera</p>
+      <button class='close-btn' onclick='closeModal()'>Tutup</button>`;
+    }
+    modalBg.style.display='flex';
+  }
+  function closeModal(){modalBg.style.display='none';}
+
+  // Chat
+  const chatBtn=document.getElementById('chat-btn');
+  const chatBox=document.getElementById('chat-box');
+  const messages=document.getElementById('messages');
+  const input=document.getElementById('user-input');
+
+  chatBtn.onclick=()=>{chatBox.classList.toggle('open');};
+
+  function handleKey(e){
+    if(e.key==='Enter'){
+      const msg=input.value.trim();
+      if(msg){
+        messages.innerHTML+=`<div><b>Anda:</b> ${msg}</div>`;
+        // Jawaban sederhana
+        let reply="Saya belum paham pertanyaan itu.";
+        if(msg.toLowerCase().includes('manfaat')) reply="Lidah buaya bermanfaat untuk kulit, pencernaan, dan kesehatan tubuh.";
+        if(msg.toLowerCase().includes('klasifikasi')) reply="Kingdom Plantae, Famili Asphodelaceae, Spesies Aloe vera.";
+        messages.innerHTML+=`<div><b>AI:</b> ${reply}</div>`;
+        messages.scrollTop=messages.scrollHeight;
+        input.value='';
+      }
+    }
+  }
+
+  // Daun jatuh
+  for(let i=0;i<10;i++){
+    const leaf=document.createElement('div');
+    leaf.className='leaf';
+    leaf.style.left=Math.random()*100+'vw';
+    leaf.style.animationDuration=5+Math.random()*5+'s';
+    document.body.appendChild(leaf);
+  }
+  
+  // Music Player
+  const music = document.getElementById('bg-music');
+  const musicBtn = document.getElementById('music-btn');
+
+  musicBtn.onclick = () => {
+    if (music.paused) {
+      music.play();
+      musicBtn.textContent = '⏸ Pause Musik';
+    } else {
+      music.pause();
+      musicBtn.textContent = '▶ Play Musik';
+    }
+  };
+</script></body>
+</html>
